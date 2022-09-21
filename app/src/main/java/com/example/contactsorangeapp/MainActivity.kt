@@ -18,6 +18,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
     private lateinit var contactsAdapter: ContactsAdapter
     private lateinit var receiver: BroadcastReceiver
+    var checkContacts = true
 
     @SuppressLint("Range")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,9 +63,18 @@ class MainActivity : AppCompatActivity() {
             rvContactsList.adapter = ContactsAdapter(contactList)
             contacts.close()
 
-            contentResolver.registerContentObserver(
-                ContactsContract.Contacts.CONTENT_URI, false, ContactsObserver(this@MainActivity)
-            )
+            if(checkContacts){
+                contentResolver.registerContentObserver(
+                    ContactsContract.Contacts.CONTENT_URI, false, ContactsObserver()
+                )
+                checkContacts = false
+
+            }
+            else if(!checkContacts){
+                val intent = Intent(this, ContactsDialog::class.java)
+                intent.putExtra("added contact", ArrayList(contactList))
+                startActivity(intent)
+            }
         }
     }
 
