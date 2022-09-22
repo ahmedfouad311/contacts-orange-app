@@ -1,15 +1,20 @@
 package com.example.contactsorangeapp
 
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.contact_child.view.*
 
-class ContactsAdapter( // contains all the logic needed
-    private val contacts: MutableList<Contacts>,
-) : RecyclerView.Adapter<ContactsAdapter.ContactsViewHolder>() {
+class ContactsAdapter(
+    items: List<Contacts>, ctx: Context
+)
+ : RecyclerView.Adapter<ContactsAdapter.ContactsViewHolder>() {
+
+    private var list = items
+    private var context = ctx
 
     class ContactsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val name = itemView.tvContactName!!
@@ -28,13 +33,14 @@ class ContactsAdapter( // contains all the logic needed
 
 
     override fun onBindViewHolder(holder: ContactsViewHolder, position: Int) {
-        val curContact = contacts[position]
-        holder.name.text = curContact.toString()
-        holder.number.text = curContact.toString()
+        val posName = list[position].name
+        val posNumber = list[position].number
+        holder.name.text = "Name: $posName"
+        holder.number.text = "Number: $posNumber"
 
     }
 
     override fun getItemCount(): Int {
-        return contacts.size
+        return list.size
     }
 }

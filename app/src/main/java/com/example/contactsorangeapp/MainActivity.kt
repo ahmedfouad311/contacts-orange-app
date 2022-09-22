@@ -2,22 +2,18 @@ package com.example.contactsorangeapp
 
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.database.ContentObserver
 import android.os.Bundle
 import android.provider.ContactsContract
-import android.util.Log
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var contactsAdapter: ContactsAdapter
     private lateinit var receiver: BroadcastReceiver
+    private lateinit var contactsObj: Contacts
     var checkContacts = true
 
     @SuppressLint("Range")
@@ -32,48 +28,51 @@ class MainActivity : AppCompatActivity() {
         registerReceiver(receiver, filter)
 
 
-        contactsAdapter = ContactsAdapter(mutableListOf())
-
-        rvContactsList.adapter = contactsAdapter
         rvContactsList.layoutManager = LinearLayoutManager(this)
 
         btnReadContacts.setOnClickListener {
             val contactList: MutableList<Contacts> = ArrayList()
-            val contactsObj = Contacts()
             val contacts = contentResolver.query(
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                arrayOf(
-                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
-                    ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
-                    ContactsContract.CommonDataKinds.Phone.NUMBER
-                ),
-                ContactsContract.Contacts.HAS_PHONE_NUMBER + ">0 AND LENGTH(" + ContactsContract.CommonDataKinds.Phone.NUMBER + ")>0",
                 null,
-                "display_name ASC"
+                null,
+                null,
+                null,
             )
             while (contacts!!.moveToNext()) {
                 val name =
                     contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME))
                 val number =
                     contacts.getString(contacts.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
+                contactsObj = Contacts()
                 contactsObj.name = name
                 contactsObj.number = number
                 contactList.add(contactsObj)
             }
-            rvContactsList.adapter = ContactsAdapter(contactList)
+            rvContactsList.adapter = ContactsAdapter(contactList, this)
             contacts.close()
+
+//            contentResolver.registerContentObserver(
+//                ContactsContract.Contacts.CONTENT_URI, false, ContactsObserver(this))
+
 
             if(checkContacts){
                 contentResolver.registerContentObserver(
-                    ContactsContract.Contacts.CONTENT_URI, false, ContactsObserver()
+                    ContactsContract.Contacts.CONTENT_URI, false, ContactsObserver(this)
                 )
                 checkContacts = false
 
             }
             else if(!checkContacts){
                 val intent = Intent(this, ContactsDialog::class.java)
-                intent.putExtra("added contact", ArrayList(contactList))
+                intent.putExtra("added Name", contactsObj.name)
+                intent.putExtra("added Phone", contactsObj.number)
                 startActivity(intent)
+
+//                val builder = AlertDialog.Builder(this)
+//                builder.setTitle("Last added Contact")
+//                builder.setMessage("Action")
+//                builder.show()
             }
         }
     }

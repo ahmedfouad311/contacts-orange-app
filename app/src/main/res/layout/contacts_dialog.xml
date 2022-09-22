@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:paddingTop="20dp"
-            android:paddingBottom="20dp"
+            android:paddingBottom="15dp"
             android:text="Last Added Contact"
             android:textColor="@color/white"
             android:textColorHint="#FFF" />
@@ -34,12 +34,24 @@
             app:layout_constraintBottom_toBottomOf="@id/txtTitle" />
 
         <TextView
-            android:id="@+id/tvAddedContact"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:id="@+id/tvAddedName"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:gravity="center"
-            android:paddingTop="20dp"
-            android:paddingBottom="20dp"
+            android:layout_marginTop="10dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:text=""
+            android:textColor="@color/white"
+            android:textColorHint="#FFF" />
+
+        <TextView
+            android:id="@+id/tvAddedNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:text=""
             android:textColor="@color/white"
             android:textColorHint="#FFF" />
