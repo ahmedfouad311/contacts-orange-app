@@ -1,6 +1,3 @@
 package com.example.contactsorangeapp
 
-class Contacts {
-    var name = ""
-    var number = ""
-}
+data class Contacts(var name: String = "", var number: String = "")
